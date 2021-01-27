@@ -10,8 +10,9 @@ from helpers import SqlQueries
 # AWS_SECRET = os.environ.get('AWS_SECRET')
 
 default_args = {
-    'owner': 'udacity',
+    'owner': 'mfrisoli',
     'start_date': datetime(2019, 1, 12),
+    #'end_date': datetime(2019,1,12)
 }
 
 dag = DAG('udac_example_dag',
@@ -25,6 +26,10 @@ start_operator = DummyOperator(task_id='Begin_execution',  dag=dag)
 
 # Airflow Global Variables
 # arn_iam_role
+# s3_bucket: 
+# Hooks
+# redshift
+# aws_credentials
 
 stage_events_to_redshift = StageToRedshiftOperator(
     task_id='Stage_events',
@@ -33,7 +38,7 @@ stage_events_to_redshift = StageToRedshiftOperator(
     table="staging_events",
     aws_credentials_id="aws_credentials",
     s3_bucket="s3_bucket",
-    s3_key="test",
+    s3_key="log_data/2018/11/{ds}-events.json",
     region="region",
     arn_iam_role="arn_iam_role",
     json="s3://udacity-dend/log_json_path.json"
@@ -86,18 +91,18 @@ end_operator = DummyOperator(task_id='Stop_execution',  dag=dag)
 
 start_operator >> [stage_events_to_redshift, stage_songs_to_redshift]
 
-[stage_events_to_redshift, stage_songs_to_redshift] >> load_songplays_table
+#[stage_events_to_redshift, stage_songs_to_redshift] >> load_songplays_table
 
-load_songplays_table >> [load_song_dimension_table,
-                         load_user_dimension_table,
-                         load_artist_dimension_table,
-                         load_time_dimension_table]
+#load_songplays_table >> [load_song_dimension_table,
+#                         load_user_dimension_table,
+#                         load_artist_dimension_table,
+#                         load_time_dimension_table]
 
-[load_song_dimension_table,
- load_user_dimension_table,
- load_artist_dimension_table,
- load_time_dimension_table] >> run_quality_checks
+#[load_song_dimension_table,
+# load_user_dimension_table,
+# load_artist_dimension_table,
+# load_time_dimension_table] >> run_quality_checks
 
 
-run_quality_checks >> end_operator
+#run_quality_checks >> end_operator
 

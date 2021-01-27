@@ -39,17 +39,27 @@ class StageToRedshiftOperator(BaseOperator):
         self.aws_iam_role = aws_iam_role
 
     def execute(self, context):
+        
         self.log.info('StageToRedshiftOperator not implemented yet')
+        # Hooks
         aws_hook = AwsHook(self.aws_credentials)
         redshift = PostgresHook(self.redshift_conn_id)
-        create_tables_sql = stage_sql_template
-        redshift.run(create_tables_sql.format(
+        
+        # Bucket render i.e. udacity-dend/log_data
+        s3_render_key = self.s3_key.(**context)
+        
+        bucket = "s3://{}/{}".format(self.s3_bucket, s3_render_key)
+        
+        # SQL Statement Format
+        copy_sql = StageToRedshiftOperator.stage_sql_template.format(
             self.table,
-            self.s3_bucket,
+            bucket,
             self.aws_iam_role,
             self.json,
-            self.region)
+            self.region
         )
+        
+        redshift.run(copy_sql)
         self.log.info('StageToRedshiftOperator SUCCESS')
         
 
