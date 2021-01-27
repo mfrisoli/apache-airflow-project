@@ -9,7 +9,7 @@ class StageToRedshiftOperator(BaseOperator):
     stage_sql_template = """
     COPY {}
     FROM '{}'
-    CREDENDIALS 'aws_iam_role={}'
+    CREDENTIALS 'aws_iam_role={}'
     json '{}'
     REGION '{}'
     TIMEFORMAT as 'epochmillisecs'
@@ -19,24 +19,24 @@ class StageToRedshiftOperator(BaseOperator):
     def __init__(self,
                  redshift_conn_id="",
                  table="",
-                 aws_credentials_id="",
+                 aws_credentials="",
                  s3_bucket="",
                  s3_key="",
                  json="",
                  region="",
-                 aws_iam_role="",
+                 arn_iam_role="",
                  *args, **kwargs):
 
         super(StageToRedshiftOperator, self).__init__(*args, **kwargs)
         self.redshift_conn_id = redshift_conn_id
         self.table = table
-        self.aws_credentials = aws_credentials_id
+        self.aws_credentials = aws_credentials
         self.s3_bucket = s3_bucket
         self.s3_key = s3_key
         self.aws_hook = AwsHook,
         self.json = json,
         self.region = region,
-        self.aws_iam_role = aws_iam_role
+        self.arn_iam_role = arn_iam_role
 
     def execute(self, context):
         
@@ -54,9 +54,9 @@ class StageToRedshiftOperator(BaseOperator):
         copy_sql = StageToRedshiftOperator.stage_sql_template.format(
             self.table,
             bucket,
-            self.aws_iam_role,
-            self.json,
-            self.region
+            self.arn_iam_role,
+            self.json[0],
+            self.region[0]
         )
         
         redshift.run(copy_sql)

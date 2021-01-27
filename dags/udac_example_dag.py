@@ -11,7 +11,7 @@ from helpers import SqlQueries
 
 default_args = {
     'owner': 'mfrisoli',
-    'start_date': datetime(2019, 1, 12),
+    'start_date': datetime(2019, 1, 12)
     #'end_date': datetime(2019,1,12)
 }
 
@@ -40,7 +40,7 @@ stage_events_to_redshift = StageToRedshiftOperator(
     s3_bucket="udacity-dend",
     s3_key="log_data/2018/11/{ds}-events.json",
     region="us-west-2",
-    arn_iam_role="arn_iam_role",
+    arn_iam_role="arn:aws:iam::879294216748:role/dwhRole",
     json="s3://udacity-dend/log_json_path.json"
 )
 
@@ -53,7 +53,7 @@ stage_songs_to_redshift = StageToRedshiftOperator(
     s3_bucket="udacity-dend",
     s3_key="song_data",
     region="us-west-2",
-    arn_iam_role="arn_iam_role",
+    arn_iam_role="arn:aws:iam::879294216748:role/dwhRole",
     json="auto"
 )
 
@@ -91,18 +91,18 @@ end_operator = DummyOperator(task_id='Stop_execution',  dag=dag)
 
 start_operator >> [stage_events_to_redshift, stage_songs_to_redshift]
 
-#[stage_events_to_redshift, stage_songs_to_redshift] >> load_songplays_table
+[stage_events_to_redshift, stage_songs_to_redshift] >> load_songplays_table
 
-#load_songplays_table >> [load_song_dimension_table,
-#                         load_user_dimension_table,
-#                         load_artist_dimension_table,
-#                         load_time_dimension_table]
+load_songplays_table >> [load_song_dimension_table,
+                         load_user_dimension_table,
+                         load_artist_dimension_table,
+                         load_time_dimension_table]
 
-#[load_song_dimension_table,
-# load_user_dimension_table,
-# load_artist_dimension_table,
-# load_time_dimension_table] >> run_quality_checks
+[load_song_dimension_table,
+ load_user_dimension_table,
+ load_artist_dimension_table,
+ load_time_dimension_table] >> run_quality_checks
 
 
-#run_quality_checks >> end_operator
+run_quality_checks >> end_operator
 
