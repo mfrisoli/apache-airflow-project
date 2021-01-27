@@ -46,7 +46,7 @@ class StageToRedshiftOperator(BaseOperator):
         redshift = PostgresHook(self.redshift_conn_id)
         
         # Bucket render i.e. udacity-dend/log_data
-        s3_render_key = self.s3_key.(**context)
+        s3_render_key = self.s3_key.format(**context)
         
         bucket = "s3://{}/{}".format(self.s3_bucket, s3_render_key)
         

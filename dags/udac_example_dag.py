@@ -37,9 +37,9 @@ stage_events_to_redshift = StageToRedshiftOperator(
     redshift_conn_id="redshift",
     table="staging_events",
     aws_credentials_id="aws_credentials",
-    s3_bucket="s3_bucket",
+    s3_bucket="udacity-dend",
     s3_key="log_data/2018/11/{ds}-events.json",
-    region="region",
+    region="us-west-2",
     arn_iam_role="arn_iam_role",
     json="s3://udacity-dend/log_json_path.json"
 )
@@ -50,9 +50,9 @@ stage_songs_to_redshift = StageToRedshiftOperator(
     redshift_conn_id="redshift",
     table="staging_songs",
     aws_credentials_id="aws_credentials",
-    s3_bucket="s3_bucket",
+    s3_bucket="udacity-dend",
     s3_key="song_data",
-    region="region",
+    region="us-west-2",
     arn_iam_role="arn_iam_role",
     json="auto"
 )
