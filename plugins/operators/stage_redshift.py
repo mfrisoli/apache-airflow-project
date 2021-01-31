@@ -39,11 +39,15 @@ class StageToRedshiftOperator(BaseOperator):
         self.arn_iam_role = arn_iam_role
 
     def execute(self, context):
-        
+              
         self.log.info('StageToRedshiftOperator not implemented yet')
         # Hooks
         aws_hook = AwsHook(self.aws_credentials)
         redshift = PostgresHook(self.redshift_conn_id)
+        
+        # Delete Data in tables prior copying
+        
+        redshift.run("TRUNCATE TABLE {}".format(self.table))
         
         # Bucket render i.e. udacity-dend/log_data
         s3_render_key = self.s3_key.format(**context)
@@ -59,7 +63,9 @@ class StageToRedshiftOperator(BaseOperator):
             self.region[0]
         )
         
+        # Execute copy_sql to redshift
         redshift.run(copy_sql)
+        
         self.log.info('StageToRedshiftOperator SUCCESS')
         
 
