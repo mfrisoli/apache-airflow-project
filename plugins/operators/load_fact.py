@@ -4,6 +4,16 @@ from airflow.utils.decorators import apply_defaults
 
 class LoadFactOperator(BaseOperator):
 
+    """
+    Operator to load data from staging table to facts table
+
+    arg:
+    - redshift_conn_id: Redshift Hook
+    - table: str table name
+    - sql_query: str SQL query
+    - columns: str Coulumn Name
+    """
+
     ui_color = '#F98866'
     
     sql_insert = """

@@ -13,24 +13,25 @@ default_args = {
     'owner': 'mfrisoli',
     'start_date': datetime(2018, 11, 1),
     'end_date': datetime(2018, 11, 30),
-    'provide_context': True    
+    'provide_context': True,
+    'depends_on_past': False,
+    'retries': 1,
+    'retry_delay': timedelta(minutes=5),
+    'catchup_by_default': False,
 }
 
 dag = DAG('udac_example_dag',
           default_args=default_args,
           description='Load and transform data in Redshift with Airflow',
-          schedule_interval='0 0 * * *',
+          schedule_interval='0 * * * *',
           max_active_runs=1
         )
 
 start_operator = DummyOperator(task_id='Begin_execution',  dag=dag)
 
-# Airflow Global Variables
-# arn_iam_role
-# s3_bucket: 
-# Hooks
-# redshift
-# aws_credentials
+# Airflow Global Connections
+#  redshift
+#  aws_credentials
 
 stage_events_to_redshift = StageToRedshiftOperator(
     task_id='Stage_events',

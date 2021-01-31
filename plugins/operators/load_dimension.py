@@ -3,6 +3,15 @@ from airflow.models import BaseOperator
 from airflow.utils.decorators import apply_defaults
 
 class LoadDimensionOperator(BaseOperator):
+    """
+    Operator to load data from staging table to dimensions table
+
+    arg:
+    - redshift_conn_id: Redshift Hook
+    - table: str table name
+    - sql_query: str SQL query
+    - columns: str Coulumn Name
+    """
 
     ui_color = '#80BD9E'
     

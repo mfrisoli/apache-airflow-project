@@ -3,6 +3,14 @@ from airflow.models import BaseOperator
 from airflow.utils.decorators import apply_defaults
 
 class DataQualityOperator(BaseOperator):
+    """
+    Operator to check that data exist in tables
+
+    arg:
+    - redshift_conn_id: Redshift Hook
+    - tables: list of table names
+    """
+
 
     ui_color = '#89DA59'
     

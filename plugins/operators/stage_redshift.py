@@ -4,6 +4,24 @@ from airflow.utils.decorators import apply_defaults
 from airflow.contrib.hooks.aws_hook import AwsHook
 
 class StageToRedshiftOperator(BaseOperator):
+    """
+    Operator that loads data from an AWS s3 repository to a Redshift Cluster
+
+    arg:
+    - redshift_conn_id: Redshift Hook
+    - table: str table name
+    - sql_query: str SQL query
+    - columns: str Coulumn Name
+    - aws_credentials: AWS Hook
+    - s3_bucket: str s3 bucket address
+    - s3_key: str s3 key
+    - json: str JSON format string
+    - region: str
+    - arn_iam_role: str AWS IAM ARN ROLE
+    """
+
+
+
     ui_color = '#358140'
     
     stage_sql_template = """
