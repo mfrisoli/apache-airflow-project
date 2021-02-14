@@ -9,6 +9,7 @@ class LoadDimensionOperator(BaseOperator):
     arg:
     - redshift_conn_id: Redshift Hook
     - table: str table name
+    - append: bool
     - sql_query: str SQL query
     - columns: str Coulumn Name
     """
@@ -26,6 +27,7 @@ class LoadDimensionOperator(BaseOperator):
                  redshift_conn_id="",
                  sql_query="",
                  table="",
+                 append="",
                  columns="",
                  *args, **kwargs):
 
@@ -33,11 +35,19 @@ class LoadDimensionOperator(BaseOperator):
         self.redshift_conn_id = redshift_conn_id
         self.sql_query = sql_query
         self.table = table
+        self.append = append
         self.columns = columns
 
     def execute(self, context):
         self.log.info('LoadDimensionOperator not implemented yet')
         redshift = PostgresHook(self.redshift_conn_id)
+
+        # Append-Only True/False
+        if not self.append:
+            self.log.info('Append: False - Existing data will be removed')
+            sql_query_append = "TRUNCATE TABLE {}".format(self.table)
+            redshift.run(sql_query_append)
+
         
         # Render Complete SQL query
         sql_insert_render = LoadDimensionOperator.sql_insert.format(
